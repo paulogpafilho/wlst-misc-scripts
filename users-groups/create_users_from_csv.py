@@ -13,13 +13,12 @@ For example:
 """
 import os, sys, fileinput
 from weblogic.management.security.authentication import UserEditorMBean
+
 print '---- WLST User Creating Start ----'
 print ''
 # Get the current path of the script and build the users cvs file - assuming they are in the same directory
 dir_name =  os.path.dirname(sys.argv[0])
-file_loc = os.path.join(dir_name, 'users.csv')
-print 'File to process users: ' + file_loc
-print ''
+file_loc = os.path.join(dir_name, 'create_users.csv')
 # Location of the csv file, if not set will use users.csv
 csv_file = os.environ.get('CSV_FILE', file_loc)
 # Weblogic admin user, if not set will use weblogic
@@ -28,6 +27,9 @@ wls_user = os.environ.get('WLS_USER', 'weblogic')
 wls_password = os.environ.get('WLS_PASS', 'Oracle123')
 # Weblogic Admin Server URL, if not set will use t3://localhost:7001
 wls_url = os.environ.get('WLS_URL', 't3://localhost:7001')
+
+print 'Users file to process: \'' + csv_file + '\''
+print ''
 
 # Connects to WLS Admin Server
 connect(wls_user, wls_password, wls_url)
@@ -48,15 +50,18 @@ try:
     description = i[2].strip()
     if not atnr.userExists(username):
       print 'Creating user \'' + username + '\'...'
-      atnr.createUser(username, password, description)
-      print 'User \'' + username + '\' created successfully!'
+      try:
+        atnr.createUser(username, password, description)
+        print 'User \'' + username + '\' created successfully!'
+      except weblogic.management.utils.InvalidParameterException, ie:
+        print('Error while creating the user')
+        print str(ie)
+        pass
       print ''
     else:
       print 'User \'' + username + '\' already exists, skipping...'
       print ''
-except Exception, e:
-  print str(e) + ': username=' + username + ', password=' + password + ', description=' + description
- 
+except StandardError, e:
+  print 'Unexpected Exception raised: ' + str(e)
+  print 'Terminating script...'
 print '---- WLST User Creating End ----'
-#
-#
