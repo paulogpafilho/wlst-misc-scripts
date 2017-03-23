@@ -10,7 +10,7 @@ Read the script comments for each description and requirements but as a general 
 
 For example:
 
-/home/oracle/MW_HOME/common/bin/wlst.sh <SCRIPT>
+/home/oracle/MW_HOME/common/bin/wlst.sh SCRIPT_NAME
 
 Some scripts will require additional files; others some environment variable to be set.
 
