@@ -50,7 +50,7 @@ csv_file = os.environ.get('CSV_FILE', csv_file)
 # Weblogic admin user, if not set will use weblogic
 wls_user = os.environ.get('WLS_USER', 'weblogic')
 # Weblogic admin password, if not set will use Welcome1
-wls_password = os.environ.get('WLS_PASS', 'Oracle123')
+wls_password = os.environ.get('WLS_PASS', 'Welcome1')
 # Weblogic Admin Server URL, if not set will use t3://localhost:7001
 wls_url = os.environ.get('WLS_URL', 't3://localhost:7001')
 
@@ -61,20 +61,26 @@ connect(wls_user, wls_password, wls_url)
 # Obtains the AuthenticatorProvider MBean
 atnr = cmo.getSecurityConfiguration().getDefaultRealm().lookupAuthenticationProvider("DefaultAuthenticator")
 
-# Read the users file
 username = ''
 password = ''
 description = ''
 try:
   print 'Starting users creation\n'
+  # Read the csv file
   for line in fileinput.input(csv_file):
+    # Split the line by comma
     i = line.split(',')
+    # Get the username
     username = i[0].strip()
+    # Get the password
     password = i[1].strip()
+    # Get the description
     description = i[2].strip()
+    # If user does not exist
     if not atnr.userExists(username):
       print 'Creating user \'' + username + '\'...'
       try:
+        # Create user
         atnr.createUser(username, password, description)
         print 'User \'' + username + '\' created successfully!'
       except weblogic.management.utils.InvalidParameterException, ie:

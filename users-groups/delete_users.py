@@ -47,7 +47,7 @@ csv_file = os.environ.get('CSV_FILE', csv_file)
 # Weblogic admin user, if not set will use weblogic
 wls_user = os.environ.get('WLS_USER', 'weblogic')
 # Weblogic admin password, if not set will use Welcome1
-wls_password = os.environ.get('WLS_PASS', 'Oracle123')
+wls_password = os.environ.get('WLS_PASS', 'Welcome1')
 # Weblogic Admin Server URL, if not set will use t3://localhost:7001
 wls_url = os.environ.get('WLS_URL', 't3://localhost:7001')
 
@@ -61,12 +61,15 @@ atnr = cmo.getSecurityConfiguration().getDefaultRealm().lookupAuthenticationProv
 username = ''
 try:
   print 'Starting users deletion\n'
-  # Read the users file
+  # Read the csv file
   for line in fileinput.input(csv_file):
+    # Get the username
     username = line.strip()
+    # If user exist
     if atnr.userExists(username):
       print 'Deleting user \'' + username + '\'...'
       try:
+        # Remove user
         atnr.removeUser(username)
       except weblogic.management.utils.InvalidParameterException, ie:
         print('Error while deleting the user')

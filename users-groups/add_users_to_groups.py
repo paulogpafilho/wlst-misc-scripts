@@ -62,14 +62,19 @@ group = ''
 username = ''
 try:
   print 'Starting user-group assignemt\n'
-  # Read the groups file
+  # Read the csv file
   for line in fileinput.input(csv_file):
+    # Split the line by comma
     i = line.split(',')
+    # Get the group name
     group = i[0].strip()
+    # Get the username
     username = i[1].strip()
+    # If group and user exist
     if atnr.groupExists(group) and atnr.userExists(username):
       print 'Adding user \'' + username + '\' to group \'' + group + '\'...'
       try:
+        # Add user to group
         atnr.addMemberToGroup(group, username)
       except weblogic.management.utils.InvalidParameterException, ie:
         print('Error while adding user to group')

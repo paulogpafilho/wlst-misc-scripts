@@ -47,7 +47,7 @@ csv_file = os.environ.get('CSV_FILE', csv_file)
 # Weblogic admin user, if not set will use weblogic
 wls_user = os.environ.get('WLS_USER', 'weblogic')
 # Weblogic admin password, if not set will use Welcome1
-wls_password = os.environ.get('WLS_PASS', 'Oracle123')
+wls_password = os.environ.get('WLS_PASS', 'Welcome1')
 # Weblogic Admin Server URL, if not set will use t3://localhost:7001
 wls_url = os.environ.get('WLS_URL', 't3://localhost:7001')
 
@@ -61,12 +61,15 @@ atnr = cmo.getSecurityConfiguration().getDefaultRealm().lookupAuthenticationProv
 group = ''
 try:
   print 'Starting groups deletion\n'
-  # Read the groups file
+  # Read the csv file
   for line in fileinput.input(csv_file):
+    # Get the group name
     group = line.strip()
+    # If group does not exist
     if atnr.groupExists(group):
       print 'Deleting group \'' + group + '\'...'
       try:
+        # Delete group
         atnr.removeGroup(group)
       except weblogic.management.utils.InvalidParameterException, ie:
         print('Error while deleting group')

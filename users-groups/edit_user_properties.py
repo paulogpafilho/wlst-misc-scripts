@@ -68,20 +68,20 @@ props = ['c', 'departmentnumber', 'displayname', 'employeenumber', 'employeetype
 username = ''
 try:
   print 'Starting users deletion \n'
-  # Read the users file
+  # Read the csv file
   for line in fileinput.input(csv_file):
-    # Splits the file by commas
+    # Split the file by comma
     ln = line.split(',')
-    # gets the username and trims the trailings spaces
+    # get the username and trims the trailings spaces
     username = ln[0].strip()
-    # Checks if user exists in the LDAP
+    # Check if user exists in the LDAP
     if atnr.userExists(username):
       print 'Setting user \'' + username + '\' properties...'
       try:
         for j, jval in enumerate(props):  
-          # Checks if the property is not blank        
+          # Check if the property is not blank        
           if ln[j+1].strip() != '':
-            # Changes the user property in the LDAP
+            # Change the user property in the LDAP
             atnr.setUserAttributeValue(username, jval, ln[j+1].strip())
       except weblogic.management.utils.InvalidParameterException, ie:
         print('Error while editing \'' + username  + '\' properties')

@@ -62,14 +62,19 @@ group = ''
 username = ''
 try:
   print 'Starting user-group removal\n'
-  # Read the groups file
+  # Read the csv file
   for line in fileinput.input(csv_file):
+    # Split the line by comma
     i = line.split(',')
+    # Get the group name
     group = i[0].strip()
+    # Get the username
     username = i[1].strip()
+    # If group and user exist
     if atnr.groupExists(group) and atnr.userExists(username):
       print 'Removing user \'' + username + '\' from group \'' + group + '\'...'
       try:
+        # Remove user from group
         atnr.removeMemberFromGroup(group, username)
       except weblogic.management.utils.InvalidParameterException, ie:
         print('Error while removing user from group')

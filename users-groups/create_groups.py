@@ -47,29 +47,34 @@ csv_file = os.environ.get('CSV_FILE', csv_file)
 # Weblogic admin user, if not set will use weblogic
 wls_user = os.environ.get('WLS_USER', 'weblogic')
 # Weblogic admin password, if not set will use Welcome1
-wls_password = os.environ.get('WLS_PASS', 'Oracle123')
+wls_password = os.environ.get('WLS_PASS', 'Welcome1')
 # Weblogic Admin Server URL, if not set will use t3://localhost:7001
 wls_url = os.environ.get('WLS_URL', 't3://localhost:7001')
 
 print 'Groups file to process: \'' + csv_file + '\'\n'
 
-# Connects to WLS Admin Server
+# Connect to WLS Admin Server
 connect(wls_user, wls_password, wls_url)
-# Obtains the AuthenticatorProvider MBean
+# Obtain the AuthenticatorProvider MBean
 atnr = cmo.getSecurityConfiguration().getDefaultRealm().lookupAuthenticationProvider("DefaultAuthenticator")
 
 group = ''
 description = ''
 try:
   print 'Starting groups creation\n'
-  # Read the groups file
+  # Read the csv file
   for line in fileinput.input(csv_file):
+    # Split the line by comma
     i = line.split(',')
+    # Get the group name
     group = i[0].strip()
+    # Get the group description
     description = i[1].strip()
+    # If the group does not exist
     if not atnr.groupExists(group):
       print 'Creating group \'' + group + '\'...'
       try:
+        # Create the group
         atnr.createGroup(group, description)
       except weblogic.management.utils.InvalidParameterException, ie:
         print('Error while creating group')
